@@ -967,7 +967,7 @@ startAgent(){
       stopNeZhaAgent
   fi
 
-  nohup ./nezha-agent -c config.yml
+  nohup ./nezha-agent -c config.yml >/dev/null 2>&1 &
   
   if checknezhaAgentAlive; then
       green "启动成功!"
@@ -1056,16 +1056,11 @@ local uuid=$(uuidgen)  # 使用 uuidgen 生成 UUID
     uuid: $uuid
 EOF
 
-  local args="--report-delay 4 --disable-auto-update --disable-force-update "
-  if [[ "$tls" == "y" ]]; then
-     args="${args} --tls "
-  fi
-
   if checknezhaAgentAlive; then
       stopNeZhaAgent
   fi
 
-  nohup ./nezha-agent ${args} -s "${nezha_domain}:${nezha_port}" -p "${nezha_pwd}" >/dev/null 2>&1 &
+  nohup ./nezha-agent -c config.yml >/dev/null 2>&1 &
   green "哪吒探针成功启动!"
 }
 
