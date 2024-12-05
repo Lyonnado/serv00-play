@@ -963,21 +963,11 @@ startAgent(){
      return
   fi
   
-  nezha_domain=$(jq eval ".nezha_domain" $configfile)
-  nezha_port=$(jq eval ".nezha_port" $configfile)
-  nezha_pwd=$(jq eval ".nezha_pwd" $configfile)
-  tls=$(jq eval ".tls" $configfile)
-
   if checknezhaAgentAlive; then
       stopNeZhaAgent
   fi
 
-  local args="--report-delay 4 --disable-auto-update --disable-force-update "
-  if [[ "$tls" == "y" ]]; then
-     args="${args} --tls "
-  fi
-
-  nohup ./nezha-agent ${args} -s ${nezha_domain}:${nezha_port} -p ${nezha_pwd} >/dev/null 2>&1 &
+  nohup ./nezha-agent -c config.yml
   
   if checknezhaAgentAlive; then
       green "启动成功!"
