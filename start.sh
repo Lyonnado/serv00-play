@@ -963,10 +963,10 @@ startAgent(){
      return
   fi
   
-  nezha_domain=$(yq eval ".nezha_domain" $configfile)
-  nezha_port=$(yq eval ".nezha_port" $configfile)
-  nezha_pwd=$(yq eval ".nezha_pwd" $configfile)
-  tls=$(yq eval ".tls" $configfile)
+  nezha_domain=$(jq eval ".nezha_domain" $configfile)
+  nezha_port=$(jq eval ".nezha_port" $configfile)
+  nezha_pwd=$(jq eval ".nezha_pwd" $configfile)
+  tls=$(jq eval ".tls" $configfile)
 
   if checknezhaAgentAlive; then
       stopNeZhaAgent
@@ -1020,12 +1020,21 @@ installNeZhaAgent(){
     nezha_port=${nezha_port:-443}
     read -p "请输入服务器密钥(从哪吒面板中获取):" nezha_pwd
     read -p "是否启用针对 gRPC 端口的 SSL/TLS加密 (--tls)，需要请按 [y]，默认是不需要，不理解用户可回车跳过: " tls
-    tls=${tls:-"N"}
+    tls=${tls:-"n"}
+
+    if [[ "$tls" == "y" ]]; then
+      tls="true"
+    elif [[ "$tls" == "n" ]]; then
+      tls="false"
+    else
+      tls="false"
+  fi
+
   else
-    nezha_domain=$(yq eval ".nezha_domain" $config)
-    nezha_port=$(yq eval ".nezha_port" $config)
-    nezha_pwd=$(yq eval ".nezha_pwd" $config)
-    tls=$(yq eval ".tls" $config)
+    nezha_domain=$(jq eval ".nezha_domain" $config)
+    nezha_port=$(jq eval ".nezha_port" $config)
+    nezha_pwd=$(jq eval ".nezha_pwd" $config)
+    tls=$(jq eval ".tls" $config)
   fi
 
   if [[ -z "$nezha_domain" || -z "$nezha_port" || -z "$nezha_pwd" ]]; then
